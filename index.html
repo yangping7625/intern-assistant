@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>求职智配平台 - CareerMatch AI</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span class="logo-icon">🎯</span>
+        <div>
+          <div class="logo-text">CareerMatch AI</div>
+          <div class="logo-sub">求职智配平台 · 从筛选到入职的全流程助手</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span id="api-key-status" class="api-key-status not-ready">未配置 Key</span>
+        <button id="api-key-btn" class="icon-btn">🔑 Key</button>
+        <button id="theme-toggle" class="icon-btn">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" data-tab="match">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">岗位匹配</span>
+      </button>
+      <button class="tab-btn" data-tab="resume">
+        <span class="tab-icon">📝</span>
+        <span class="tab-label">简历优化</span>
+      </button>
+      <button class="tab-btn" data-tab="interview">
+        <span class="tab-icon">🎤</span>
+        <span class="tab-label">面试模拟</span>
+      </button>
+      <button class="tab-btn" data-tab="career">
+        <span class="tab-icon">🧭</span>
+        <span class="tab-label">职业规划</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <section id="tab-match" class="tab-content active">
+      <div class="match-layout">
+        <div class="match-sidebar">
+          <div class="card compact">
+            <div class="card-header-sm">
+              <h4>导入岗位</h4>
+              <button id="load-sample-jobs" class="btn-text">示例岗位</button>
+            </div>
+            <textarea id="jobs-input" class="data-textarea" rows="8"
+              placeholder="CSV 格式：公司,岗位,日薪,工作制,时长,地点,餐补,住宿,要求&#10;或粘贴岗位描述文本"></textarea>
+            <div class="import-actions">
+              <button id="parse-jobs" class="btn-primary">解析</button>
+              <button id="clear-jobs" class="btn-ghost">清空</button>
+              <span id="parse-status" class="parse-status"></span>
+            </div>
+          </div>
+
+          <div class="card compact profile-mini">
+            <div class="card-header-sm"><h4>求职画像</h4></div>
+            <div class="profile-tags" id="profile-tags"></div>
+            <button id="edit-profile" class="btn-text">编辑画像</button>
+          </div>
+        </div>
+
+        <div class="match-main">
+          <div id="match-summary" class="match-summary" style="display:none;">
+            <div class="summary-stat">
+              <div class="stat-number" id="stat-total">0</div>
+              <div class="stat-label">总岗位</div>
+            </div>
+            <div class="summary-stat">
+              <div class="stat-number" id="stat-match" style="color:var(--success);">0</div>
+              <div class="stat-label">符合画像</div>
+            </div>
+            <div class="summary-stat">
+              <div class="stat-number" id="stat-fav" style="color:var(--warning);">0</div>
+              <div class="stat-label">已收藏</div>
+            </div>
+            <div class="summary-stat">
+              <div class="stat-number" id="stat-avg-salary" style="color:var(--primary);">0</div>
+              <div class="stat-label">平均日薪</div>
+            </div>
+          </div>
+
+          <div id="jobs-section" style="display:none;">
+            <div class="filter-bar">
+              <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="match">符合画像</button>
+                <button class="filter-btn" data-filter="favorite">收藏</button>
+              </div>
+              <select id="sort-select" class="sort-select">
+                <option value="match">按匹配度</option>
+                <option value="salary-desc">日薪高到低</option>
+                <option value="salary-asc">日薪低到高</option>
+              </select>
+            </div>
+            <div id="jobs-list" class="jobs-list"></div>
+          </div>
+
+          <div id="match-empty" class="empty-hero">
+            <div class="empty-icon">📋</div>
+            <h3>导入岗位数据开始匹配</h3>
+            <p>粘贴 CSV 格式岗位信息，或点击「示例岗位」快速体验</p>
+            <p class="muted">系统会自动计算每个岗位与你的匹配度（0-100分）</p>
+          </div>
+
+          <div id="chat-section" class="card chat-card" style="display:none;">
+            <div class="card-header-sm">
+              <h4>智能问答</h4>
+              <span class="hint">基于已导入岗位数据回答</span>
+            </div>
+            <div class="quick-questions" id="quick-questions">
+              <button class="quick-btn" data-q="帮我找符合画像的岗位，按匹配度排序">符合画像的岗位</button>
+              <button class="quick-btn" data-q="按日薪从高到低排列">按日薪排序</button>
+              <button class="quick-btn" data-q="哪些岗位是双休且包吃住的">双休+包吃住</button>
+              <button class="quick-btn" data-q="对比匹配度最高的3个岗位的优缺点">对比Top3</button>
+            </div>
+            <div id="chat-messages" class="chat-messages"></div>
+            <div class="chat-input-row">
+              <input type="text" id="chat-input" class="chat-input" placeholder="问我任何关于岗位的问题..." disabled>
+              <button id="chat-send" class="btn-primary" disabled>发送</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-resume" class="tab-content">
+      <div class="resume-layout">
+        <div class="resume-input">
+          <div class="card compact">
+            <div class="card-header-sm"><h4>你的简历</h4></div>
+            <textarea id="resume-input" class="data-textarea" rows="12"
+              placeholder="粘贴你的简历内容（文本格式即可）&#10;&#10;包括：基本信息、教育背景、项目经历、技能等"></textarea>
+          </div>
+          <div class="card compact">
+            <div class="card-header-sm"><h4>目标岗位描述</h4></div>
+            <textarea id="target-job-input" class="data-textarea" rows="6"
+              placeholder="粘贴目标岗位的JD（职位描述）&#10;&#10;或填写岗位名称和关键要求"></textarea>
+            <div class="import-actions">
+              <button id="analyze-resume" class="btn-primary">AI 分析优化</button>
+              <span id="resume-status" class="parse-status"></span>
+            </div>
+          </div>
+        </div>
+        <div class="resume-output">
+          <div id="resume-result" class="card resume-result-card">
+            <div class="resume-placeholder">
+              <div class="empty-icon">📝</div>
+              <h3>AI 简历优化器</h3>
+              <p>粘贴简历和目标岗位描述，AI 会帮你：</p>
+              <ul>
+                <li>分析简历与岗位的匹配度</li>
+                <li>找出缺失的关键技能和关键词</li>
+                <li>优化经历描述，突出亮点</li>
+                <li>给出针对性的修改建议</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-interview" class="tab-content">
+      <div class="interview-layout">
+        <div class="interview-setup" id="interview-setup">
+          <div class="card compact">
+            <div class="card-header-sm"><h4>面试模拟设置</h4></div>
+            <div class="form-group">
+              <label>目标岗位</label>
+              <input type="text" id="interview-position" class="form-input"
+                placeholder="如：AI训练师实习生" value="AI训练师实习生">
+            </div>
+            <div class="form-group">
+              <label>面试类型</label>
+              <select id="interview-type" class="form-input">
+                <option value="general">综合面试（自我介绍+项目+行为）</option>
+                <option value="technical">技术面试（专业问题为主）</option>
+                <option value="behavioral">行为面试（STAR法则）</option>
+                <option value="hr">HR面试（薪资+稳定性）</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>补充信息（可选）</label>
+              <textarea id="interview-context" class="data-textarea" rows="4"
+                placeholder="如：这是贵阳的实习岗位，要求6个月，我零实习经验..."></textarea>
+            </div>
+            <button id="start-interview" class="btn-primary btn-block">开始模拟面试</button>
+          </div>
+        </div>
+        <div class="interview-chat" id="interview-chat" style="display:none;">
+          <div class="card chat-card">
+            <div class="card-header-sm">
+              <h4>模拟面试 · <span id="interview-title"></span></h4>
+              <button id="end-interview" class="btn-ghost btn-sm">结束面试</button>
+            </div>
+            <div id="interview-messages" class="chat-messages"></div>
+            <div class="chat-input-row">
+              <input type="text" id="interview-input" class="chat-input"
+                placeholder="输入你的回答..." disabled>
+              <button id="interview-send" class="btn-primary" disabled>回答</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-career" class="tab-content">
+      <div class="career-layout">
+        <div class="card compact">
+          <div class="card-header-sm"><h4>你的背景</h4></div>
+          <div class="form-group">
+            <label>专业</label>
+            <input type="text" id="career-major" class="form-input"
+              value="数据科学与大数据技术" placeholder="你的专业">
+          </div>
+          <div class="form-group">
+            <label>学校层次</label>
+            <select id="career-school" class="form-input">
+              <option value="本科">本科</option>
+              <option value="硕士">硕士</option>
+              <option value="专科">专科</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>毕业年份</label>
+            <input type="text" id="career-grad" class="form-input"
+              value="2027" placeholder="毕业年份">
+          </div>
+          <div class="form-group">
+            <label>意向方向（逗号分隔）</label>
+            <input type="text" id="career-directions" class="form-input"
+              value="AI训练师,数据标注,政务数据,产品运营" placeholder="感兴趣的方向">
+          </div>
+          <div class="form-group">
+            <label>城市偏好</label>
+            <input type="text" id="career-city" class="form-input"
+              value="贵阳" placeholder="意向城市">
+          </div>
+          <div class="form-group">
+            <label>补充说明</label>
+            <textarea id="career-notes" class="data-textarea" rows="3"
+              placeholder="如：零实习经验、想考公、希望边上班边备考等"></textarea>
+          </div>
+          <button id="generate-career" class="btn-primary btn-block">生成职业规划</button>
+        </div>
+        <div id="career-result" class="card career-result-card">
+          <div class="resume-placeholder">
+            <div class="empty-icon">🧭</div>
+            <h3>AI 职业规划</h3>
+            <p>填写你的背景信息，AI 会生成：</p>
+            <ul>
+              <li>适合你的职业方向分析</li>
+              <li>短期（3-6个月）行动路径</li>
+              <li>中长期（1-3年）发展规划</li>
+              <li>技能提升建议和学习资源</li>
+              <li>Plan B 备选方案</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="profile-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <h3>编辑求职画像</h3>
+      <div id="profile-edit-fields"></div>
+      <div class="modal-actions">
+        <button id="profile-save" class="btn-primary">保存</button>
+        <button id="profile-cancel" class="btn-ghost">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="api-key-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <h3>配置 DeepSeek API Key</h3>
+      <p class="modal-desc">你的 Key 保存在浏览器本地，不会上传到任何服务器。</p>
+      <input type="password" id="api-key-input" class="api-key-input"
+        placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <p class="modal-hint">
+        获取方式：访问 <a href="https://platform.deepseek.com/api_keys" target="_blank">DeepSeek 开放平台</a>
+        → 创建 API Key → 复制粘贴到这里
+      </p>
+      <div class="modal-actions">
+        <button id="api-key-save" class="btn-primary">保存</button>
+        <button id="api-key-cancel" class="btn-ghost">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="job-detail-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box modal-lg">
+      <div id="job-detail-content"></div>
+      <div class="modal-actions">
+        <button id="job-detail-close" class="btn-ghost">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script src="config.js"></script>
+  <script src="apikey.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

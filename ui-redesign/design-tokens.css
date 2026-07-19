@@ -1,0 +1,284 @@
+/* ============================================================
+ * Intern Assistant — Mobile H5 Design Tokens
+ * Version: 1.1.0  (统一版: 与 PC 端 #5b5bd6 + zinc 体系对齐)
+ * Updated: 2026-07-19
+ *
+ * 简约专业风格 · 移动端优先 · WCAG AA 合规
+ * 主色 #5b5bd6 / 中性 zinc 暖灰 / 降饱和度语义色
+ * 与 PC 端 design-tokens.css 共用同一套视觉语言
+ * 直接引入即可使用所有 CSS 变量
+ * ============================================================ */
+
+:root {
+  /* ===== 色彩系统 ===== */
+
+  /* 主色 (Primary — 柔和靛蓝 #5b5bd6, 与 PC 端统一)
+   * 50/200/600/700 精确对齐 PC 端 primary-light/border/hover/active */
+  --c-primary-50:  #eeedfa;
+  --c-primary-100: #e8e7f7;
+  --c-primary-200: #d4d3f0;
+  --c-primary-300: #b4b3e6;
+  --c-primary-400: #8583da;
+  --c-primary-500: #5b5bd6;  /* 品牌主色, 与 PC 端 --primary 一致 */
+  --c-primary-600: #4a4ac9;  /* hover, 与 PC 端 --primary-hover 一致 */
+  --c-primary-700: #3d3db8;  /* active, 与 PC 端 --primary-active 一致 */
+  --c-primary-800: #31319e;
+  --c-primary-900: #28287e;
+
+  /* 中性色 (Neutral — zinc 暖灰体系, 与 PC 端统一)
+   * 比 slate 冷灰更舒适, 适合长时间阅读 */
+  --c-gray-50:  #fafafa;
+  --c-gray-100: #f4f4f5;
+  --c-gray-200: #e4e4e7;
+  --c-gray-300: #d4d4d8;
+  --c-gray-400: #a1a1aa;
+  --c-gray-500: #71717a;
+  --c-gray-600: #52525b;
+  --c-gray-700: #3f3f46;
+  --c-gray-800: #27272a;
+  --c-gray-900: #18181b;
+  --c-gray-950: #09090b;
+
+  /* 语义色 (Semantic — 降饱和度, 与 PC 端统一, 柔和不刺眼) */
+  --c-success-50:  #dcfce7;
+  --c-success-100: #bbf7d0;
+  --c-success-500: #16a34a;
+  --c-success-600: #15803d;
+  --c-success-700: #166534;
+
+  --c-warning-50:  #fef3c7;
+  --c-warning-100: #fde68a;
+  --c-warning-500: #d97706;
+  --c-warning-600: #b45309;
+  --c-warning-700: #92400e;
+
+  --c-error-50:  #fee2e2;
+  --c-error-100: #fecaca;
+  --c-error-500: #dc2626;
+  --c-error-600: #b91c1c;
+  --c-error-700: #991b1b;
+
+  --c-info-50:  #cffafe;
+  --c-info-100: #a5f3fc;
+  --c-info-500: #0891b2;
+  --c-info-600: #0e7490;
+  --c-info-700: #155e75;
+
+  /* 语义化别名 (推荐日常使用, 与 PC 端命名对齐) */
+  --color-bg-page:      var(--c-gray-50);   /* 页面背景, = PC --bg */
+  --color-bg-surface:   #ffffff;            /* 卡片/容器背景, = PC --card-bg */
+  --color-bg-elevated:  #ffffff;            /* 浮层背景 */
+  --color-bg-muted:     var(--c-gray-100);  /* 次级背景, = PC --bg-subtle */
+
+  --color-text-primary:   var(--c-gray-900); /* 主文字, = PC --text #18181b (对比 15.0:1 ✓ AAA) */
+  --color-text-secondary: var(--c-gray-600); /* 次文字, = PC --text-secondary #52525b (对比 7.5:1 ✓ AAA) */
+  --color-text-tertiary:  var(--c-gray-400); /* 辅助文字, = PC --text-tertiary #a1a1aa (对比 2.6:1, 仅占位符/装饰) */
+  --color-text-inverse:   #ffffff;           /* 深色背景上的文字 */
+  --color-text-brand:     var(--c-primary-500);
+  --color-text-link:      var(--c-primary-600);
+
+  --color-border:         var(--c-gray-200); /* 默认边框, = PC --border #e4e4e7 */
+  --color-border-strong:  var(--c-gray-300); /* 强调边框, = PC --border-strong #d4d4d8 */
+  --color-border-brand:   var(--c-primary-200);
+
+  /* 岗位标签专用色 (业务语义, 暖色系, 与标签内容情绪一致) */
+  --tag-salary-bg:    #fff7ed;  --tag-salary-text:    #c2410c;  /* 日薪: 暖橙 */
+  --tag-schedule-bg:  #dcfce7;  --tag-schedule-text:  #166534;  /* 工作制: 绿 (对齐 success) */
+  --tag-duration-bg:  #eeedfa;  --tag-duration-text:  #4338ca;  /* 时长: 品牌靛蓝 */
+  --tag-location-bg:  #fff1f2;  --tag-location-text:  #be123c;  /* 地点: 玫红 */
+  --tag-meal-bg:      #fef3c7;  --tag-meal-text:      #92400e;  /* 餐补: 琥珀 (对齐 warning) */
+  --tag-housing-bg:   #f5f3ff;  --tag-housing-text:   #6d28d9;  /* 住宿: 紫 */
+
+  /* ===== 字体系统 ===== */
+
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  --font-family-mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+
+  /* 字号阶梯 (移动端正文 15px, 比 PC 14px 稍大, 阅读距离补偿)
+   * 与 PC 端 --text-md 对齐 */
+  --fs-xs:   12px;  /* 辅助说明 / 标签 */
+  --fs-sm:   13px;  /* 次要文字 */
+  --fs-base: 15px;  /* 正文 (移动端基准) */
+  --fs-lg:   17px;  /* 卡片标题 */
+  --fs-xl:   20px;  /* 区块标题 */
+  --fs-2xl:  24px;  /* 页面标题 */
+  --fs-3xl:  30px;  /* 展示标题 */
+
+  /* 字重 */
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+
+  /* 行高 */
+  --lh-tight:   1.25;  /* 标题 */
+  --lh-snug:    1.4;   /* 紧凑 */
+  --lh-normal:  1.6;   /* 正文 */
+  --lh-relaxed: 1.75;  /* 长文阅读 */
+
+  /* 字间距 */
+  --ls-tight:  -0.01em;
+  --ls-normal: 0;
+  --ls-wide:   0.02em;
+
+  /* ===== 间距系统 (4px 基准, 8 点网格, 与 PC 端统一) ===== */
+
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ===== 圆角系统 (移动端略大于 PC 端, 触摸设备更友好) ===== */
+
+  --radius-xs:   6px;   /* 小标签 (PC 端为 4px) */
+  --radius-sm:   8px;   /* 按钮 / 输入框 (PC 端为 6px) */
+  --radius-md:   12px;  /* 卡片 (PC 端为 10px) */
+  --radius-lg:   16px;  /* 大卡片 / 容器 (PC 端为 14px) */
+  --radius-xl:   20px;  /* 弹窗 / 抽屉 (与 PC 端一致) */
+  --radius-2xl:  24px;  /* 大弹窗 */
+  --radius-full: 9999px; /* 圆形 / 胶囊 */
+
+  /* ===== 阴影系统 (zinc 基底, 与 PC 端统一; 移动端克制不宜过重) ===== */
+
+  --shadow-xs: 0 1px 2px rgba(24, 24, 27, 0.04);
+  --shadow-sm: 0 1px 3px rgba(24, 24, 27, 0.06), 0 1px 2px rgba(24, 24, 27, 0.04);
+  --shadow-md: 0 4px 12px rgba(24, 24, 27, 0.08), 0 2px 4px rgba(24, 24, 27, 0.04);
+  --shadow-lg: 0 8px 24px rgba(24, 24, 27, 0.10), 0 2px 8px rgba(24, 24, 27, 0.06);
+  --shadow-xl: 0 16px 40px rgba(24, 24, 27, 0.12), 0 4px 12px rgba(24, 24, 27, 0.06);
+  --shadow-brand: 0 4px 12px rgba(91, 91, 214, 0.25);  /* 主色阴影, #5b5bd6 rgba */
+
+  /* ===== 动效系统 ===== */
+
+  --ease-standard:    cubic-bezier(0.4, 0, 0.2, 1);   /* 标准入场 (= PC --transition) */
+  --ease-emphasized:  cubic-bezier(0.2, 0, 0, 1);     /* 强调入场 */
+  --ease-decelerated: cubic-bezier(0, 0, 0.2, 1);     /* 减速入场 */
+  --ease-accelerated: cubic-bezier(0.4, 0, 1, 1);     /* 加速退场 */
+
+  --duration-fast:    150ms;  /* 微交互: 悬停/按压 (= PC --transition) */
+  --duration-normal:  250ms;  /* 常规: 展开/折叠 */
+  --duration-slow:    300ms;  /* 页面: 转场 (= PC --transition-slow) */
+  --duration-slower:  600ms;  /* 复杂: 动画序列 */
+
+  /* ===== 层级 (z-index) ===== */
+
+  --z-base:      0;
+  --z-dropdown:  100;
+  --z-sticky:    200;
+  --z-fixed:     300;
+  --z-modal:     1000;
+  --z-toast:     2000;
+  --z-popover:   3000;
+
+  /* ===== 移动端专属规范 ===== */
+
+  /* 安全区域 (刘海屏 / Home Indicator) */
+  --safe-area-top:    env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left:   env(safe-area-inset-left, 0px);
+  --safe-area-right:  env(safe-area-inset-right, 0px);
+
+  /* 触摸目标 (WCAG: 最小 44px, 推荐 48px) */
+  --touch-target-min:  44px;
+  --touch-target-sm:   40px;  /* 紧凑场景, 需配合更大间距 */
+  --touch-target-base: 48px;  /* 标准触摸目标 */
+  --touch-target-lg:   56px;  /* 主操作按钮 */
+
+  /* 移动端容器最大宽度 (防止平板/桌面过宽) */
+  --container-max-width: 480px;
+
+  /* 顶部导航栏高度 */
+  --topbar-height: 56px;
+  /* 底部 Tab 栏高度 (含安全区域) */
+  --tabbar-height: calc(56px + var(--safe-area-bottom));
+  /* 底部输入栏高度 */
+  --inputbar-height: calc(60px + var(--safe-area-bottom));
+
+  /* 页面内容底部留白 (避免被固定栏遮挡) */
+  --content-padding-bottom-tabbar: calc(var(--tabbar-height) + var(--space-4));
+  --content-padding-bottom-inputbar: calc(var(--inputbar-height) + var(--space-4));
+}
+
+/* ===== 暗色主题 (与 PC 端 [data-theme="dark"] 统一, zinc 深色体系) ===== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-primary-500: #8181f0;  /* = PC dark --primary */
+    --c-primary-600: #7272e8;  /* = PC dark --primary-hover */
+    --c-primary-700: #6363e0;  /* = PC dark --primary-active */
+    --c-primary-50:  #1e1e3f;  /* = PC dark --primary-light */
+    --c-primary-100: #16162e;  /* = PC dark --primary-lighter */
+    --c-primary-200: #2e2e5c;  /* = PC dark --primary-border */
+
+    --color-bg-page:     #09090b;  /* = PC dark --bg */
+    --color-bg-surface:  #18181b;  /* = PC dark --card-bg */
+    --color-bg-elevated: #27272a;
+    --color-bg-muted:    #18181b;  /* = PC dark --bg-subtle */
+
+    --color-text-primary:   #fafafa;  /* = PC dark --text */
+    --color-text-secondary: #a1a1aa;  /* = PC dark --text-secondary */
+    --color-text-tertiary:  #71717a;  /* = PC dark --text-tertiary */
+
+    --color-border:        #27272a;  /* = PC dark --border */
+    --color-border-strong: #3f3f46;  /* = PC dark --border-strong */
+
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ===== 全局基础样式 ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%; /* 防止横屏字体缩放 */
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-page);
+  letter-spacing: var(--ls-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 焦点可见性 (键盘无障碍) */
+:focus-visible {
+  outline: 2px solid var(--c-primary-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* 选中文本 (= PC 端 ::selection) */
+::selection {
+  background: var(--c-primary-50);
+  color: var(--c-primary-700);
+}
+
+/* 尊重用户动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

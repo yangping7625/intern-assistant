@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实习信息智能助手 · 移动端 H5 设计系统</title>
+<link rel="stylesheet" href="design-tokens.css">
+<style>
+  /* ============ 展示页专属样式 (画廊层, 不属于设计系统本身) ============ */
+  body {
+    background: #f4f4f5;
+    color: var(--color-text-primary);
+    padding: 0;
+  }
+  .gallery {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+  .gallery-header {
+    text-align: center;
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .gallery-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--c-gray-900);
+    margin-bottom: 12px;
+  }
+  .gallery-header .subtitle {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+  }
+  .badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+  }
+  .badge--brand { background: var(--c-primary-50); color: var(--c-primary-700); border-color: var(--c-primary-200); }
+  .badge--success { background: var(--c-success-50); color: var(--c-success-700); border-color: var(--c-success-100); }
+
+  /* 锚点导航 */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(241, 245, 249, 0.85);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    margin: 0 -24px 48px;
+    padding: 12px 24px;
+  }
+  .nav-inner {
+    max-width: 1152px;
+    margin: 0 auto;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav a {
+    flex-shrink: 0;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 14px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-standard);
+  }
+  .nav a:hover { background: var(--color-bg-surface); color: var(--color-text-primary); }
+
+  /* Section 通用 */
+  section {
+    margin-bottom: 64px;
+    scroll-margin-top: 72px;
+  }
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .section-title h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--c-gray-900);
+    letter-spacing: -0.01em;
+  }
+  .section-title .num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-primary-500);
+    font-family: var(--font-family-mono);
+  }
+  .section-desc {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 24px;
+  }
+
+  /* 卡片容器 */
+  .panel {
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    padding: 28px;
+    box-shadow: var(--shadow-xs);
+  }
+  .panel + .panel { margin-top: 20px; }
+  .panel-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  /* ============ 色彩展示 ============ */
+  .color-row {
+    display: flex;
+    align-items: flex-end;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    height: 88px;
+    margin-bottom: 12px;
+  }
+  .color-swatch {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    font-size: 11px;
+    font-family: var(--font-family-mono);
+    font-weight: 500;
+  }
+  .color-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 28px;
+  }
+  .color-meta span { font-family: var(--font-family-mono); }
+  .color-blocks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .color-block {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+  .color-block .chip { height: 64px; }
+  .color-block .info {
+    padding: 10px 12px;
+    background: var(--color-bg-surface);
+  }
+  .color-block .info strong { display: block; font-size: 13px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; }
+  .color-block .info code { font-size: 11px; color: var(--color-text-tertiary); font-family: var(--font-family-mono); }
+
+  /* ============ 字体展示 ============ */
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-spec {
+    flex-shrink: 0;
+    width: 140px;
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-mono);
+  }
+  .type-sample { color: var(--color-text-primary); }
+
+  /* ============ 间距 / 圆角 / 阴影 ============ */
+  .spacing-grid {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .spacing-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .spacing-bar {
+    background: var(--c-primary-200);
+    border-radius: 3px;
+  }
+  .spacing-label {
+    font-size: 11px;
+    font-family: var(--font-family-mono);
+    color: var(--color-text-secondary);
+  }
+  .radius-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .radius-box {
+    width: 72px;
+    height: 72px;
+    background: var(--c-primary-100);
+    border: 2px solid var(--c-primary-400);
+  }
+  .radius-label {
+    font-size: 11px;
+    font-family: var(--font-family-mono);
+    color: var(--color-text-secondary);
+  }
+  .shadow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+  }
+  .shadow-card {
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+  }
+  .shadow-card .name { font-size: 12px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .shadow-card .val { font-size: 10px; font-family: var(--font-family-mono); color: var(--color-text-tertiary); }
+
+  /* ============ 组件展示 ============ */
+  .comp-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-label {
+    width: 120px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+
+  /* 按钮组件 */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 48px;
+    padding: 0 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-standard);
+    user-select: none;
+  }
+  .btn--primary { background: var(--c-primary-500); color: #fff; }
+  .btn--primary:hover { background: var(--c-primary-600); transform: translateY(-1px); box-shadow: var(--shadow-brand); }
+  .btn--secondary { background: var(--color-bg-surface); color: var(--c-primary-500); border: 1px solid var(--c-primary-200); }
+  .btn--ghost { background: transparent; color: var(--color-text-secondary); }
+  .btn--ghost:hover { background: var(--color-bg-muted); }
+  .btn--disabled { background: var(--c-gray-200); color: var(--c-gray-400); cursor: not-allowed; }
+  .btn--lg { height: 56px; font-size: 16px; }
+
+  /* 输入框 */
+  .input {
+    height: 48px;
+    width: 240px;
+    padding: 0 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--color-text-primary);
+    background: var(--color-bg-surface);
+    transition: all var(--duration-fast);
+  }
+  .input::placeholder { color: var(--color-text-tertiary); }
+  .input:focus { outline: none; border-color: var(--c-primary-500); box-shadow: 0 0 0 3px var(--c-primary-50); }
+  .input--error { border-color: var(--c-error-500); }
+
+  /* 标签 */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: var(--radius-xs);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* 卡片 */
+  .job-card {
+    width: 320px;
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-xs);
+    position: relative;
+    overflow: hidden;
+  }
+  .job-card.matched { border-left: 3px solid var(--c-success-500); }
+  .job-card .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .job-card .match-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    background: var(--c-success-500);
+    color: #fff;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .job-card h4 { font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
+  .job-card .company { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px; }
+  .job-card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .job-card .req { font-size: 13px; color: var(--color-text-secondary); padding-top: 12px; border-top: 1px solid var(--color-border); margin-bottom: 12px; }
+  .job-card .actions { display: flex; gap: 8px; }
+  .job-card .actions .btn { flex: 1; height: 36px; font-size: 13px; padding: 0 8px; }
+
+  /* 对话气泡 */
+  .chat-demo { width: 320px; display: flex; flex-direction: column; gap: 12px; }
+  .bubble-row { display: flex; gap: 8px; align-items: flex-end; }
+  .bubble-row.user { flex-direction: row-reverse; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .avatar.ai { background: var(--c-primary-50); }
+  .avatar.user { background: var(--c-primary-500); color: #fff; font-size: 13px; font-weight: 600; }
+  .bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .bubble.ai { background: var(--color-bg-surface); border: 0.5px solid var(--color-border); border-radius: 16px 16px 16px 4px; color: var(--color-text-primary); }
+  .bubble.user { background: var(--c-primary-500); color: #fff; border-radius: 16px 16px 4px 16px; }
+  .typing { display: flex; gap: 4px; padding: 4px 0; }
+  .typing span { width: 6px; height: 6px; background: var(--color-text-tertiary); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+  /* Toast */
+  .toast-demo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 20px;
+    background: var(--c-gray-900);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* 骨架屏 */
+  .skeleton-card { width: 280px; }
+  .skeleton {
+    background: linear-gradient(90deg, var(--c-gray-100) 0%, var(--c-gray-200) 50%, var(--c-gray-100) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+  }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .skel-line { height: 14px; margin-bottom: 10px; }
+  .skel-line.title { height: 18px; width: 60%; }
+  .skel-line.sub { height: 12px; width: 40%; }
+  .skel-tags { display: flex; gap: 6px; margin-bottom: 12px; }
+  .skel-tag { height: 20px; width: 56px; border-radius: 6px; }
+
+  /* 空状态 */
+  .empty-demo {
+    width: 280px;
+    padding: 32px 16px;
+    text-align: center;
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--color-border-strong);
+  }
+  .empty-demo .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-demo h4 { font-size: 15px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .empty-demo p { font-size: 13px; color: var(--color-text-tertiary); margin-bottom: 16px; }
+
+  /* ============ 移动端原型 ============ */
+  .phones {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .phone {
+    width: 375px;
+    background: var(--color-bg-page);
+    border-radius: 44px;
+    border: 10px solid #18181b;
+    box-shadow: var(--shadow-xl), 0 0 0 1px var(--c-gray-300);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .phone-screen {
+    height: 720px;
+    background: var(--color-bg-page);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  /* 状态栏 */
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px 0 28px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    background: var(--color-bg-surface);
+    flex-shrink: 0;
+  }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+  .status-bar .icons svg { width: 16px; height: 11px; }
+
+  /* 顶部导航栏 */
+  .topbar {
+    height: var(--topbar-height);
+    background: var(--color-bg-surface);
+    border-bottom: 0.5px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .topbar .title {
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .topbar .icon-btn {
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none; cursor: pointer;
+    color: var(--color-text-primary);
+    font-size: 20px;
+  }
+
+  /* 内容区 */
+  .screen-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .screen-body::-webkit-scrollbar { display: none; }
+
+  /* 筛选栏 */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    flex-shrink: 0;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    border: none;
+    cursor: pointer;
+  }
+  .filter-chip.active { background: var(--c-primary-500); color: #fff; }
+
+  /* 岗位卡片 (原型内) */
+  .jc {
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-xs);
+    position: relative;
+  }
+  .jc.matched::before {
+    content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px;
+    background: var(--c-success-500); border-radius: 0 3px 3px 0;
+  }
+  .jc .jc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .jc .jc-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
+  .jc .jc-star { color: var(--c-gray-300); font-size: 18px; cursor: pointer; }
+  .jc .jc-star.on { color: #fbbf24; }
+  .jc .jc-co { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 10px; }
+  .jc .jc-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .jc .jc-req { font-size: 12px; color: var(--color-text-secondary); padding-top: 10px; border-top: 0.5px solid var(--color-border); margin-bottom: 10px; line-height: 1.5; }
+  .jc .jc-actions { display: flex; gap: 6px; }
+  .jc .jc-actions button {
+    flex: 1; height: 32px; border: none; border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .jc .jc-actions .act-ai { background: var(--c-primary-50); color: var(--c-primary-600); }
+  .jc .jc-actions .act-nav { background: var(--color-bg-muted); color: var(--color-text-secondary); }
+  .jc .jc-actions .act-detail { background: var(--color-bg-muted); color: var(--color-text-secondary); }
+
+  /* AI 对话页 */
+  .chat-screen { padding: 0 !important; }
+  .chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .chat-body::-webkit-scrollbar { display: none; }
+  .chat-inputbar {
+    height: var(--inputbar-height);
+    background: var(--color-bg-surface);
+    border-top: 0.5px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px calc(var(--safe-area-bottom));
+    flex-shrink: 0;
+  }
+  .quick-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%; border: none;
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-inputbar input {
+    flex: 1; height: 40px; border: none;
+    background: var(--color-bg-muted);
+    border-radius: var(--radius-full);
+    padding: 0 16px; font-size: 14px; font-family: inherit;
+    color: var(--color-text-primary);
+  }
+  .chat-inputbar input::placeholder { color: var(--color-text-tertiary); }
+  .send-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%; border: none;
+    background: var(--c-primary-500);
+    color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .send-btn:disabled { background: var(--c-gray-200); color: var(--c-gray-400); }
+
+  /* 我的页 */
+  .profile-header {
+    background: var(--color-bg-surface);
+    padding: 24px 16px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--c-primary-400), var(--c-primary-600));
+    color: #fff; font-size: 28px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+  }
+  .profile-name { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .profile-sub { font-size: 13px; color: var(--color-text-secondary); }
+  .profile-stats {
+    display: flex; justify-content: space-around;
+    padding: 16px; background: var(--color-bg-surface);
+    border-radius: var(--radius-md); margin-bottom: 12px;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 20px; font-weight: 700; color: var(--c-primary-500); }
+  .stat .label { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .menu-group {
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--color-border);
+    cursor: pointer;
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item .mi-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--c-primary-50); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .menu-item .mi-label { flex: 1; font-size: 15px; color: var(--color-text-primary); }
+  .menu-item .mi-arrow { color: var(--color-text-tertiary); font-size: 14px; }
+
+  /* 底部 Tab */
+  .tabbar {
+    height: var(--tabbar-height);
+    background: var(--color-bg-surface);
+    border-top: 0.5px solid var(--color-border);
+    display: flex;
+    padding-bottom: var(--safe-area-bottom);
+    flex-shrink: 0;
+  }
+  .tab {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit;
+    padding-top: 8px;
+  }
+  .tab .tab-icon { font-size: 22px; line-height: 1; }
+  .tab .tab-text { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); }
+  .tab.active .tab-text { color: var(--c-primary-500); }
+  .tab.active .tab-icon { filter: hue-rotate(0deg) saturate(2); }
+
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px;
+    background: var(--color-text-primary);
+    border-radius: 3px;
+    opacity: 0.3;
+  }
+
+  /* 手机标签 */
+  .phone-label {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  .phone-label small { display: block; font-weight: 400; font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; }
+
+  @media (max-width: 768px) {
+    .gallery { padding: 24px 16px 48px; }
+    .gallery-header h1 { font-size: 24px; }
+    .nav { margin: 0 -16px 32px; padding: 12px 16px; }
+    .comp-label { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="gallery">
+
+  <!-- Header -->
+  <header class="gallery-header">
+    <h1>实习信息智能助手 · 移动端 H5 设计系统</h1>
+    <p class="subtitle">Intern Assistant Mobile Design System — 简约专业风格 · WCAG AA 合规 · 移动端优先</p>
+    <div class="badges">
+      <span class="badge badge--brand">v1.1.0 · 与 PC 端统一</span>
+      <span class="badge">375px 基准 / 最大 480px</span>
+      <span class="badge">4px 间距系统</span>
+      <span class="badge">48px 触摸目标</span>
+      <span class="badge badge--success">WCAG 2.1 AA</span>
+      <span class="badge">主色 #5b5bd6</span>
+    </div>
+  </header>
+
+  <!-- 锚点导航 -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#color">色彩</a>
+      <a href="#type">字体</a>
+      <a href="#space">间距</a>
+      <a href="#shadow">阴影</a>
+      <a href="#components">组件</a>
+      <a href="#prototype">移动端原型</a>
+    </div>
+  </nav>
+
+  <!-- 1. 色彩 -->
+  <section id="color">
+    <div class="section-title">
+      <span class="num">01</span>
+      <h2>色彩系统</h2>
+    </div>
+    <p class="section-desc">主色 #5b5bd6（柔和靛蓝，与 PC 端统一），完整 50-900 色阶。中性色采用 zinc 暖灰体系，所有正文组合通过 WCAG AA 对比度。</p>
+
+    <div class="panel">
+      <div class="panel-label">主色色阶 · Primary</div>
+      <div class="color-row">
+        <div class="color-swatch" style="background:#eeedfa;color:#3d3db8">50</div>
+        <div class="color-swatch" style="background:#e8e7f7;color:#3d3db8">100</div>
+        <div class="color-swatch" style="background:#d4d3f0;color:#31319e">200</div>
+        <div class="color-swatch" style="background:#b4b3e6;color:#fff">300</div>
+        <div class="color-swatch" style="background:#8583da;color:#fff">400</div>
+        <div class="color-swatch" style="background:#5b5bd6;color:#fff">500</div>
+        <div class="color-swatch" style="background:#4a4ac9;color:#fff">600</div>
+        <div class="color-swatch" style="background:#3d3db8;color:#fff">700</div>
+        <div class="color-swatch" style="background:#31319e;color:#fff">800</div>
+        <div class="color-swatch" style="background:#28287e;color:#fff">900</div>
+      </div>
+      <div class="color-meta">
+        <span>500 #5b5bd6 — 主按钮 / 链接 (白字 5.3:1 ✓ AA)</span>
+        <span>600 #4a4ac9 — Hover (白字 6.6:1 ✓ AA)</span>
+        <span>700 #3d3db8 — 选中态文字 (对比 8.1:1 ✓ AAA)</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">中性色 · Neutral (zinc 暖灰体系, 与 PC 端统一)</div>
+      <div class="color-row">
+        <div class="color-swatch" style="background:#fafafa;color:#52525b">50</div>
+        <div class="color-swatch" style="background:#f4f4f5;color:#52525b">100</div>
+        <div class="color-swatch" style="background:#e4e4e7;color:#52525b">200</div>
+        <div class="color-swatch" style="background:#d4d4d8;color:#fff">300</div>
+        <div class="color-swatch" style="background:#a1a1aa;color:#fff">400</div>
+        <div class="color-swatch" style="background:#71717a;color:#fff">500</div>
+        <div class="color-swatch" style="background:#52525b;color:#fff">600</div>
+        <div class="color-swatch" style="background:#3f3f46;color:#fff">700</div>
+        <div class="color-swatch" style="background:#27272a;color:#fff">800</div>
+        <div class="color-swatch" style="background:#18181b;color:#fff">900</div>
+      </div>
+      <div class="color-meta">
+        <span>900 #18181b — 主文字 (15.0:1 ✓ AAA)</span>
+        <span>600 #52525b — 次文字 (7.5:1 ✓ AAA)</span>
+        <span>400 #a1a1aa — 仅占位符/装饰 (2.6:1 非正文)</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">语义色 · Semantic</div>
+      <div class="color-blocks">
+        <div class="color-block"><div class="chip" style="background:#16a34a"></div><div class="info"><strong>Success</strong><code>#16a34a · 成功</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#d97706"></div><div class="info"><strong>Warning</strong><code>#d97706 · 警告</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#dc2626"></div><div class="info"><strong>Error</strong><code>#dc2626 · 错误</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#0891b2"></div><div class="info"><strong>Info</strong><code>#0891b2 · 信息</code></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">岗位业务标签色 · Job Tags</div>
+      <div class="color-blocks">
+        <div class="color-block"><div class="chip" style="background:#fff7ed;border:1px solid #fed7aa"><span style="color:#c2410c;font-size:12px;display:flex;align-items:center;justify-content:center;height:100%">¥180/天</span></div><div class="info"><strong>日薪 · 暖橙</strong><code>#fff7ed / #c2410c</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#dcfce7;border:1px solid #bbf7d0"><span style="color:#166534;font-size:12px;display:flex;align-items:center;justify-content:center;height:100%">双休</span></div><div class="info"><strong>工作制 · 绿</strong><code>#dcfce7 / #166534</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#eeedfa;border:1px solid #d4d3f0"><span style="color:#3d3db8;font-size:12px;display:flex;align-items:center;justify-content:center;height:100%">6个月</span></div><div class="info"><strong>时长 · 品牌色</strong><code>#eeedfa / #3d3db8</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#fff1f2;border:1px solid #fecdd3"><span style="color:#be123c;font-size:12px;display:flex;align-items:center;justify-content:center;height:100%">观山湖</span></div><div class="info"><strong>地点 · 玫红</strong><code>#fff1f2 / #be123c</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#fffbeb;border:1px solid #fde68a"><span style="color:#92400e;font-size:12px;display:flex;align-items:center;justify-content:center;height:100%">免费午餐</span></div><div class="info"><strong>餐补 · 琥珀</strong><code>#fffbeb / #92400e</code></div></div>
+        <div class="color-block"><div class="chip" style="background:#f5f3ff;border:1px solid #ddd6fe"><span style="color:#6d28d9;font-size:12px;display:flex;align-items:center;justify-content:center;height:100%">人才公寓</span></div><div class="info"><strong>住宿 · 紫</strong><code>#f5f3ff / #6d28d9</code></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 字体 -->
+  <section id="type">
+    <div class="section-title">
+      <span class="num">02</span>
+      <h2>字体系统</h2>
+    </div>
+    <p class="section-desc">移动端正文 15px（阅读距离补偿），7 级字号阶梯，4 档字重，4 档行高。系统字体优先，零网络字体加载。</p>
+
+    <div class="panel">
+      <div class="panel-label">字号阶梯 · Type Scale</div>
+      <div class="type-row">
+        <div class="type-spec">fs-3xl · 30px / 700</div>
+        <div class="type-sample" style="font-size:30px;font-weight:700;letter-spacing:-0.02em">展示标题</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec">fs-2xl · 24px / 600</div>
+        <div class="type-sample" style="font-size:24px;font-weight:600">页面标题</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec">fs-xl · 20px / 600</div>
+        <div class="type-sample" style="font-size:20px;font-weight:600">区块标题</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec">fs-lg · 17px / 600</div>
+        <div class="type-sample" style="font-size:17px;font-weight:600">卡片标题 / 导航栏</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec">fs-base · 15px / 400</div>
+        <div class="type-sample" style="font-size:15px;font-weight:400;line-height:1.6">正文内容 — 移动端基准字号，中文字符清晰可读</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec">fs-sm · 13px / 400</div>
+        <div class="type-sample" style="font-size:13px;color:var(--color-text-secondary)">次要文字 · 公司名 / 说明</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec">fs-xs · 12px / 500</div>
+        <div class="type-sample" style="font-size:12px;font-weight:500;color:var(--color-text-tertiary)">辅助说明 · 标签</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 间距 -->
+  <section id="space">
+    <div class="section-title">
+      <span class="num">03</span>
+      <h2>间距与圆角</h2>
+    </div>
+    <p class="section-desc">4px 基准的 8 点网格系统，11 级间距。6 级圆角，从 6px（标签）到 9999px（胶囊）。</p>
+
+    <div class="panel">
+      <div class="panel-label">间距系统 · Spacing (4px base)</div>
+      <div class="spacing-grid">
+        <div class="spacing-item"><div class="spacing-bar" style="width:4px;height:32px"></div><div class="spacing-label">4 · space-1</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:8px;height:40px"></div><div class="spacing-label">8 · space-2</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:12px;height:48px"></div><div class="spacing-label">12 · space-3</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:16px;height:56px"></div><div class="spacing-label">16 · space-4</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:20px;height:64px"></div><div class="spacing-label">20 · space-5</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:24px;height:72px"></div><div class="spacing-label">24 · space-6</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:32px;height:80px"></div><div class="spacing-label">32 · space-8</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:40px;height:88px"></div><div class="spacing-label">40 · space-10</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:48px;height:96px"></div><div class="spacing-label">48 · space-12</div></div>
+        <div class="spacing-item"><div class="spacing-bar" style="width:64px;height:104px"></div><div class="spacing-label">64 · space-16</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">圆角系统 · Radius</div>
+      <div class="radius-grid">
+        <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">xs · 6px<br><small style="color:var(--color-text-tertiary)">标签</small></div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">sm · 8px<br><small style="color:var(--color-text-tertiary)">按钮/输入</small></div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">md · 12px<br><small style="color:var(--color-text-tertiary)">卡片</small></div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">lg · 16px<br><small style="color:var(--color-text-tertiary)">大容器</small></div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">xl · 20px<br><small style="color:var(--color-text-tertiary)">弹窗</small></div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">full<br><small style="color:var(--color-text-tertiary)">胶囊/圆形</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 阴影 -->
+  <section id="shadow">
+    <div class="section-title">
+      <span class="num">04</span>
+      <h2>阴影系统</h2>
+    </div>
+    <p class="section-desc">移动端阴影克制——强光环境下过重阴影会显脏。5 级通用阴影 + 1 级品牌色阴影（主按钮专用）。</p>
+
+    <div class="panel">
+      <div class="shadow-grid">
+        <div class="shadow-card" style="box-shadow:var(--shadow-xs)"><div class="name">shadow-xs</div><div class="val">0 1px 2px rgba(24,24,27,.04)</div></div>
+        <div class="shadow-card" style="box-shadow:var(--shadow-sm)"><div class="name">shadow-sm</div><div class="val">0 1px 3px rgba(24,24,27,.06)</div></div>
+        <div class="shadow-card" style="box-shadow:var(--shadow-md)"><div class="name">shadow-md</div><div class="val">0 4px 6px rgba(24,24,27,.08)</div></div>
+        <div class="shadow-card" style="box-shadow:var(--shadow-lg)"><div class="name">shadow-lg</div><div class="val">0 10px 15px rgba(24,24,27,.10)</div></div>
+        <div class="shadow-card" style="box-shadow:var(--shadow-xl)"><div class="name">shadow-xl</div><div class="val">0 20px 25px rgba(24,24,27,.12)</div></div>
+        <div class="shadow-card" style="box-shadow:var(--shadow-brand);background:var(--c-primary-50)"><div class="name" style="color:var(--c-primary-700)">shadow-brand</div><div class="val">0 4px 12px rgba(79,109,245,.25)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 组件 -->
+  <section id="components">
+    <div class="section-title">
+      <span class="num">05</span>
+      <h2>组件库</h2>
+    </div>
+    <p class="section-desc">13 个核心组件，覆盖导航、表单、反馈、数据展示。每个组件含尺寸、状态、变体规范，触摸目标 ≥ 44px。</p>
+
+    <div class="panel">
+      <div class="panel-label">按钮 · Button</div>
+      <div class="comp-row">
+        <div class="comp-label">主按钮 Primary</div>
+        <button class="btn btn--primary">确认操作</button>
+        <button class="btn btn--primary btn--lg">底部主操作 56px</button>
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">次按钮 Secondary</div>
+        <button class="btn btn--secondary">次要操作</button>
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">幽灵按钮 Ghost</div>
+        <button class="btn btn--ghost">取消</button>
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">禁用态 Disabled</div>
+        <button class="btn btn--disabled" disabled>不可点击</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">输入框 · TextInput</div>
+      <div class="comp-row">
+        <div class="comp-label">默认态</div>
+        <input class="input" placeholder="请输入岗位关键词...">
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">聚焦态</div>
+        <input class="input" value="数据标注" style="border-color:var(--c-primary-500);box-shadow:0 0 0 3px var(--c-primary-50)">
+      </div>
+      <div class="comp-row">
+        <div class="comp-label">错误态</div>
+        <input class="input input--error" value="无效输入" style="box-shadow:0 0 0 3px var(--c-error-50)">
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">标签 · Tag</div>
+      <div class="comp-row">
+        <div class="comp-label">业务标签</div>
+        <span class="tag" style="background:var(--tag-salary-bg);color:var(--tag-salary-text)">¥180/天</span>
+        <span class="tag" style="background:var(--tag-schedule-bg);color:var(--tag-schedule-text)">双休</span>
+        <span class="tag" style="background:var(--tag-duration-bg);color:var(--tag-duration-text)">6个月</span>
+        <span class="tag" style="background:var(--tag-location-bg);color:var(--tag-location-text)">观山湖</span>
+        <span class="tag" style="background:var(--tag-meal-bg);color:var(--tag-meal-text)">免费午餐</span>
+        <span class="tag" style="background:var(--tag-housing-bg);color:var(--tag-housing-text)">人才公寓</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">岗位卡片 · JobCard（核心业务组件）</div>
+      <div class="comp-row" style="align-items:flex-start">
+        <div class="comp-label" style="padding-top:14px">符合画像</div>
+        <div class="job-card matched">
+          <div class="top">
+            <div>
+              <span class="match-badge">● 符合画像</span>
+            </div>
+            <span style="color:#fbbf24;font-size:18px">★</span>
+          </div>
+          <h4 style="margin-top:8px">数据标注员</h4>
+          <div class="company">贵阳大数据交易所</div>
+          <div class="tags">
+            <span class="tag" style="background:var(--tag-salary-bg);color:var(--tag-salary-text)">¥180/天</span>
+            <span class="tag" style="background:var(--tag-schedule-bg);color:var(--tag-schedule-text)">双休</span>
+            <span class="tag" style="background:var(--tag-duration-bg);color:var(--tag-duration-text)">6个月</span>
+            <span class="tag" style="background:var(--tag-location-bg);color:var(--tag-location-text)">观山湖</span>
+          </div>
+          <div class="req">要求：本科在读，了解大模型，能连续坐班</div>
+          <div class="actions">
+            <button class="btn btn--secondary" style="flex:1;height:36px;font-size:13px;padding:0 8px">💬 问AI</button>
+            <button class="btn btn--ghost" style="flex:1;height:36px;font-size:13px;padding:0 8px">📍 导航</button>
+            <button class="btn btn--ghost" style="flex:1;height:36px;font-size:13px;padding:0 8px">📋 详情</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">对话气泡 · ChatBubble</div>
+      <div class="comp-row" style="align-items:flex-start">
+        <div class="comp-label" style="padding-top:8px">AI + 用户</div>
+        <div class="chat-demo">
+          <div class="bubble-row">
+            <div class="avatar ai">🤖</div>
+            <div class="bubble ai">你好，我帮你找贵阳的实习岗位。告诉我你的偏好：日薪、工作制、地区？</div>
+          </div>
+          <div class="bubble-row user">
+            <div class="avatar user">易</div>
+            <div class="bubble user">日薪150以上，双休，观山湖</div>
+          </div>
+          <div class="bubble-row">
+            <div class="avatar ai">🤖</div>
+            <div class="bubble ai">
+              <div class="typing"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Toast 提示</div>
+      <div class="comp-row">
+        <div class="comp-label">默认 / 成功</div>
+        <div class="toast-demo">✓ 岗位已收藏</div>
+        <div class="toast-demo">✕ 网络异常，请重试</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">骨架屏 · Skeleton</div>
+      <div class="comp-row" style="align-items:flex-start">
+        <div class="comp-label" style="padding-top:8px">加载态</div>
+        <div class="skeleton-card">
+          <div class="skeleton skel-line title"></div>
+          <div class="skeleton skel-line sub"></div>
+          <div class="skel-tags">
+            <div class="skeleton skel-tag"></div>
+            <div class="skeleton skel-tag"></div>
+            <div class="skeleton skel-tag"></div>
+          </div>
+          <div class="skeleton skel-line" style="width:90%"></div>
+          <div class="skeleton skel-line" style="width:70%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">空状态 · EmptyState</div>
+      <div class="comp-row" style="align-items:flex-start">
+        <div class="comp-label" style="padding-top:32px">无数据</div>
+        <div class="empty-demo">
+          <div class="icon">📋</div>
+          <h4>还没有岗位数据</h4>
+          <p>点击下方按钮导入示例岗位</p>
+          <button class="btn btn--secondary">导入示例岗位</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 移动端原型 -->
+  <section id="prototype">
+    <div class="section-title">
+      <span class="num">06</span>
+      <h2>移动端原型</h2>
+    </div>
+    <p class="section-desc">三个核心界面高保真原型，375px 基准。底部 Tab 可点击切换。体现底部导航、固定输入栏、岗位卡片、AI 对话等移动端原生交互范式。</p>
+
+    <div class="phones">
+
+      <!-- 手机 1: 岗位列表 -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="status-bar">
+              <span>9:41</span>
+              <div class="icons">
+                <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 8h2v3H1zm4-2h2v5H5zm4-2h2v7H9zm4-2h2v9h-2z"/></svg>
+                <svg viewBox="0 0 16 11" fill="currentColor"><path d="M8 2c2 0 4 .8 5.5 2L12 5.5C11 4.8 9.5 4 8 4s-3 .8-4 1.5L2.5 4C4 2.8 6 2 8 2zm0 4c1 0 2 .4 2.8 1L9.5 8.3c-.4-.3-.9-.5-1.5-.5s-1.1.2-1.5.5L5.2 7c.8-.6 1.8-1 2.8-1zm0 3l1.5 1.5L8 11l-1.5-1.5L8 9z"/></svg>
+                <svg viewBox="0 0 24 11" fill="currentColor"><rect x="0" y="1" width="20" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="3" width="16" height="5" rx="1"/><rect x="21" y="4" width="2" height="3" rx="1"/></svg>
+              </div>
+            </div>
+            <div class="topbar">
+              <button class="icon-btn">⊞</button>
+              <div class="title">实习岗位</div>
+              <button class="icon-btn">🔍</button>
+            </div>
+            <div class="screen-body" id="screen-jobs">
+              <div class="filter-bar">
+                <button class="filter-chip active">全部</button>
+                <button class="filter-chip">符合画像</button>
+                <button class="filter-chip">收藏</button>
+                <button class="filter-chip">日薪 ▾</button>
+                <button class="filter-chip">地区 ▾</button>
+              </div>
+
+              <div class="jc matched">
+                <div class="jc-top">
+                  <div class="jc-title">数据标注员</div>
+                  <span class="jc-star on">★</span>
+                </div>
+                <div class="jc-co">贵阳大数据交易所</div>
+                <div class="jc-tags">
+                  <span class="tag" style="background:var(--tag-salary-bg);color:var(--tag-salary-text)">¥180/天</span>
+                  <span class="tag" style="background:var(--tag-schedule-bg);color:var(--tag-schedule-text)">双休</span>
+                  <span class="tag" style="background:var(--tag-duration-bg);color:var(--tag-duration-text)">6个月</span>
+                  <span class="tag" style="background:var(--tag-location-bg);color:var(--tag-location-text)">观山湖</span>
+                  <span class="tag" style="background:var(--tag-meal-bg);color:var(--tag-meal-text)">免费午餐</span>
+                </div>
+                <div class="jc-req">要求：本科在读，了解大模型，能连续坐班，可开实习证明</div>
+                <div class="jc-actions">
+                  <button class="act-ai">💬 问AI</button>
+                  <button class="act-nav">📍 导航</button>
+                  <button class="act-detail">📋 详情</button>
+                </div>
+              </div>
+
+              <div class="jc matched">
+                <div class="jc-top">
+                  <div class="jc-title">AI 训练师助理</div>
+                  <span class="jc-star">★</span>
+                </div>
+                <div class="jc-co">贵州云上大数据研究院</div>
+                <div class="jc-tags">
+                  <span class="tag" style="background:var(--tag-salary-bg);color:var(--tag-salary-text)">¥200/天</span>
+                  <span class="tag" style="background:var(--tag-schedule-bg);color:var(--tag-schedule-text)">双休</span>
+                  <span class="tag" style="background:var(--tag-duration-bg);color:var(--tag-duration-text)">6个月</span>
+                  <span class="tag" style="background:var(--tag-location-bg);color:var(--tag-location-text)">白云</span>
+                  <span class="tag" style="background:var(--tag-housing-bg);color:var(--tag-housing-text)">人才公寓</span>
+                </div>
+                <div class="jc-req">要求：大数据/AI 方向，熟悉 Python 基础，细致耐心</div>
+                <div class="jc-actions">
+                  <button class="act-ai">💬 问AI</button>
+                  <button class="act-nav">📍 导航</button>
+                  <button class="act-detail">📋 详情</button>
+                </div>
+              </div>
+
+              <div class="jc">
+                <div class="jc-top">
+                  <div class="jc-title">政务数据辅助岗</div>
+                  <span class="jc-star">★</span>
+                </div>
+                <div class="jc-co">观山湖区政务服务中心</div>
+                <div class="jc-tags">
+                  <span class="tag" style="background:var(--tag-salary-bg);color:var(--tag-salary-text)">¥150/天</span>
+                  <span class="tag" style="background:var(--tag-schedule-bg);color:var(--tag-schedule-text)">双休</span>
+                  <span class="tag" style="background:var(--tag-duration-bg);color:var(--tag-duration-text)">6个月</span>
+                  <span class="tag" style="background:var(--tag-location-bg);color:var(--tag-location-text)">观山湖</span>
+                </div>
+                <div class="jc-req">要求：细心稳重，熟悉 Office，能处理数据录入</div>
+                <div class="jc-actions">
+                  <button class="act-ai">💬 问AI</button>
+                  <button class="act-nav">📍 导航</button>
+                  <button class="act-detail">📋 详情</button>
+                </div>
+              </div>
+            </div>
+            <div class="tabbar">
+              <button class="tab active" data-screen="jobs"><span class="tab-icon">📋</span><span class="tab-text">岗位</span></button>
+              <button class="tab" data-screen="chat"><span class="tab-icon">💬</span><span class="tab-text">对话</span></button>
+              <button class="tab" data-screen="profile"><span class="tab-icon">👤</span><span class="tab-text">我的</span></button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+        <div class="phone-label">岗位列表页<small>默认首页 · 筛选栏 + 卡片流</small></div>
+      </div>
+
+      <!-- 手机 2: AI 对话 -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="status-bar">
+              <span>9:41</span>
+              <div class="icons">
+                <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 8h2v3H1zm4-2h2v5H5zm4-2h2v7H9zm4-2h2v9h-2z"/></svg>
+                <svg viewBox="0 0 16 11" fill="currentColor"><path d="M8 2c2 0 4 .8 5.5 2L12 5.5C11 4.8 9.5 4 8 4s-3 .8-4 1.5L2.5 4C4 2.8 6 2 8 2zm0 4c1 0 2 .4 2.8 1L9.5 8.3c-.4-.3-.9-.5-1.5-.5s-1.1.2-1.5.5L5.2 7c.8-.6 1.8-1 2.8-1zm0 3l1.5 1.5L8 11l-1.5-1.5L8 9z"/></svg>
+                <svg viewBox="0 0 24 11" fill="currentColor"><rect x="0" y="1" width="20" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="3" width="16" height="5" rx="1"/><rect x="21" y="4" width="2" height="3" rx="1"/></svg>
+              </div>
+            </div>
+            <div class="topbar">
+              <button class="icon-btn">←</button>
+              <div class="title">智能问答</div>
+              <button class="icon-btn">⋯</button>
+            </div>
+            <div class="chat-body" id="screen-chat">
+              <div class="bubble-row">
+                <div class="avatar ai">🤖</div>
+                <div class="bubble ai">你好，我是实习助手。告诉我你的偏好，我帮你筛贵阳的实习岗位。</div>
+              </div>
+              <div class="bubble-row user">
+                <div class="avatar user">易</div>
+                <div class="bubble user">日薪150以上，双休，观山湖，能开实习证明</div>
+              </div>
+              <div class="bubble-row">
+                <div class="avatar ai">🤖</div>
+                <div class="bubble ai">找到 3 个符合的岗位，按匹配度排序：<br><br>1. <strong>数据标注员</strong> · 贵阳大数据交易所 · ¥180/天<br>2. <strong>AI训练师助理</strong> · 云上大数据研究院 · ¥200/天<br>3. <strong>政务数据辅助岗</strong> · 观山湖政务中心 · ¥150/天<br><br>需要看哪个的详情？</div>
+              </div>
+              <div class="bubble-row user">
+                <div class="avatar user">易</div>
+                <div class="bubble user">第一个，能买实习险吗</div>
+              </div>
+              <div class="bubble-row">
+                <div class="avatar ai">🤖</div>
+                <div class="bubble ai">
+                  <div class="typing"><span></span><span></span><span></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="chat-inputbar">
+              <button class="quick-btn">⚡</button>
+              <input placeholder="输入你的问题...">
+              <button class="send-btn">➤</button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+        <div class="phone-label">AI 对话页<small>固定输入栏 + 快捷问题 + 打字动画</small></div>
+      </div>
+
+      <!-- 手机 3: 我的 -->
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="status-bar">
+              <span>9:41</span>
+              <div class="icons">
+                <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 8h2v3H1zm4-2h2v5H5zm4-2h2v7H9zm4-2h2v9h-2z"/></svg>
+                <svg viewBox="0 0 16 11" fill="currentColor"><path d="M8 2c2 0 4 .8 5.5 2L12 5.5C11 4.8 9.5 4 8 4s-3 .8-4 1.5L2.5 4C4 2.8 6 2 8 2zm0 4c1 0 2 .4 2.8 1L9.5 8.3c-.4-.3-.9-.5-1.5-.5s-1.1.2-1.5.5L5.2 7c.8-.6 1.8-1 2.8-1zm0 3l1.5 1.5L8 11l-1.5-1.5L8 9z"/></svg>
+                <svg viewBox="0 0 24 11" fill="currentColor"><rect x="0" y="1" width="20" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="2" y="3" width="16" height="5" rx="1"/><rect x="21" y="4" width="2" height="3" rx="1"/></svg>
+              </div>
+            </div>
+            <div class="topbar">
+              <button class="icon-btn"></button>
+              <div class="title">我的</div>
+              <button class="icon-btn">⚙</button>
+            </div>
+            <div class="screen-body" id="screen-profile">
+              <div class="profile-header" style="border-radius:0;margin:-16px -16px 12px">
+                <div class="profile-avatar">易</div>
+                <div class="profile-name">易牧</div>
+                <div class="profile-sub">遵义师范学院 · 数据科学与大数据技术</div>
+              </div>
+
+              <div class="profile-stats">
+                <div class="stat"><div class="num">12</div><div class="label">已收藏</div></div>
+                <div class="stat"><div class="num">5</div><div class="label">已投递</div></div>
+                <div class="stat"><div class="num">3</div><div class="label">符合画像</div></div>
+              </div>
+
+              <div class="menu-group">
+                <div class="menu-item">
+                  <div class="mi-icon">🎯</div>
+                  <div class="mi-label">求职画像</div>
+                  <div class="mi-arrow">›</div>
+                </div>
+                <div class="menu-item">
+                  <div class="mi-icon">★</div>
+                  <div class="mi-label">收藏岗位</div>
+                  <div class="mi-arrow">›</div>
+                </div>
+                <div class="menu-item">
+                  <div class="mi-icon">📄</div>
+                  <div class="mi-label">简历管理</div>
+                  <div class="mi-arrow">›</div>
+                </div>
+              </div>
+
+              <div class="menu-group">
+                <div class="menu-item">
+                  <div class="mi-icon">🔔</div>
+                  <div class="mi-label">投递提醒</div>
+                  <div class="mi-arrow">›</div>
+                </div>
+                <div class="menu-item">
+                  <div class="mi-icon">📖</div>
+                  <div class="mi-label">面试准备</div>
+                  <div class="mi-arrow">›</div>
+                </div>
+                <div class="menu-item">
+                  <div class="mi-icon">⚙</div>
+                  <div class="mi-label">设置</div>
+                  <div class="mi-arrow">›</div>
+                </div>
+              </div>
+            </div>
+            <div class="tabbar">
+              <button class="tab" data-screen="jobs"><span class="tab-icon">📋</span><span class="tab-text">岗位</span></button>
+              <button class="tab" data-screen="chat"><span class="tab-icon">💬</span><span class="tab-text">对话</span></button>
+              <button class="tab active" data-screen="profile"><span class="tab-icon">👤</span><span class="tab-text">我的</span></button>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+        <div class="phone-label">个人中心<small>求职画像 + 收藏 + 简历管理</small></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer style="text-align:center;padding:48px 0 0;border-top:1px solid var(--color-border);color:var(--color-text-tertiary);font-size:13px;line-height:1.8">
+    <div><strong style="color:var(--color-text-secondary)">实习信息智能助手 · 移动端 H5 设计系统 v1.1.0</strong></div>
+    <div>简约专业风格 · WCAG 2.1 AA 合规 · 375px 基准 · 4px 间距系统</div>
+    <div>UI Designer · 2026-07-19 · 供跨专家团 UI 设计师接手</div>
+  </footer>
+
+</div>
+
+<script>
+  // 底部 Tab 切换高亮（视觉演示，单屏内切换）
+  document.querySelectorAll('.phone').forEach(phone => {
+    const tabs = phone.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  });
+
+  // 岗位卡片收藏切换
+  document.querySelectorAll('.jc-star').forEach(star => {
+    star.addEventListener('click', () => {
+      star.classList.toggle('on');
+    });
+  });
+
+  // 筛选栏切换
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
